@@ -13,8 +13,7 @@ public abstract class produk {
     private double harga;
 
     public produk(String idProduk, String nama, String merek, double harga) {
-      
-        this.idProduk = UUID.randomUUID().toString();
+        this.idProduk = idProduk;
         this.nama = nama;
         this.merek = merek;
         this.harga = harga;
@@ -26,7 +25,6 @@ public abstract class produk {
         System.out.println("Harga = " + this.harga);
     }
 
-    
     public abstract void saveToDB();
 
     public String getIdProduk() {

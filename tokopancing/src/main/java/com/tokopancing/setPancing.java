@@ -20,7 +20,6 @@
 //     }
 //     @Override
 //     public int getIdProduk() {
-//         // TODO Auto-generated method stub
 //         return idSet;
 //     }
 

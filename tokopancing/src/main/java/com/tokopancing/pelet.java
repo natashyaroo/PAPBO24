@@ -44,12 +44,4 @@ public class pelet implements fungsilainnya{
             tampil();
         }
     }
-}
-
-class concretePelet extends pelet implements fungsilainnya {
-    public concretePelet(String nama, String merek, double harga, String rasa) {
-        super(nama, merek, harga, rasa);
-    }
-
-    
-}
+};

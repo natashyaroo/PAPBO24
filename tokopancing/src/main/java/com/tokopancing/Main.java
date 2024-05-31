@@ -8,16 +8,22 @@ import java.util.Scanner;
 
 public class Main {
     public static ArrayList<users> akunUser = new ArrayList<>();
-
+    public static ArrayList<produk> listProduk = new ArrayList<>();
+    public static ArrayList<joran> listJoran = new ArrayList<>();
+    public static ArrayList<mataKail> listMataKail = new ArrayList<>();
     public static void main(String[] args) throws IOException {
+
             try {
             Connection connection = DatabaseConnection.getConnection();
-            usersController userController = new usersController(connection);
+            controller dataController  = new controller(connection);
             Scanner scanner = new Scanner(System.in);
-            usersController.getAllUsers();
+            //Load set data ke ArrayList
+            controller.getAllUsers();
+            controller.loadDataJoran();
             
-
             while (true) {
+
+
                 for (int i = 0 ; i < akunUser.size() ; i++){
                     System.out.println("Username : "+akunUser.get(i).getUsername());
                 }
@@ -34,7 +40,7 @@ public class Main {
                     String username = scanner.nextLine();
                     System.out.print("Enter password: ");
                     String password = scanner.nextLine();
-                    userController.register(username, password, "pelanggan");
+                    dataController.register(username, password, "pelanggan");
                     System.out.println("User registered successfully!");
 
                 } else if (option == 2) {
@@ -43,7 +49,7 @@ public class Main {
                     String username = scanner.nextLine();
                     System.out.print("Enter password: ");
                     String password = scanner.nextLine();
-                    users user = userController.login(username, password);
+                    users user = dataController.login(username, password);
                     if (user != null) {
                         if (user.getRole().equals("pelanggan")) {
                             menuPelanggan mnu = new menuPelanggan();
@@ -63,7 +69,7 @@ public class Main {
                     System.out.println("Exiting...");
                     break;
                 } else if (option == 4) {
-                    userController.updateUser();
+                    controller.updateUser();
                 } else {
                     System.out.println("Invalid option. Please try again.");
                 }

@@ -19,8 +19,27 @@ public class mataKail extends produk {
         this.ukuran = ukuran;
     }
 
-    public void saveToDB(){
-        
+    public void saveToDB() {
+        try (Connection conn = DatabaseConnection.getConnection()){
+            try (PreparedStatement pstmt = conn.prepareStatement("INSERT INTO produk (id_produk,nama, merek, harga) VALUES (?,?, ?, ?)")) {
+                pstmt.setString(1, getIdProduk());
+                pstmt.setString(2, getNama());
+                pstmt.setString(3, getMerek());
+                pstmt.setDouble(4, getHarga());
+                pstmt.executeUpdate();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+            try (PreparedStatement pstmt = conn.prepareStatement("INSERT INTO matakail (id_produk, ukuran) VALUES (?, ?)")) {
+                pstmt.setString(1, getIdProduk());
+                pstmt.setDouble(2, getUkuran());
+                pstmt.executeUpdate();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override

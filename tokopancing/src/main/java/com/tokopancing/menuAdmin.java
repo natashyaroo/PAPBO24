@@ -7,7 +7,10 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Scanner;
+import java.util.UUID;
+
 
 public class menuAdmin {
     InputStreamReader isr = new InputStreamReader(System.in);    
@@ -25,15 +28,9 @@ public class menuAdmin {
         br.readLine();
     }
 
-
-    public void displayAdminMenu() throws IOException{
+    // ArrayList<produk> listProduk , ArrayList<joran> listJoran
+    public void displayAdminMenu() throws IOException, SQLException{
         while (true) {
-            System.out.println("Menu Utama");
-            System.out.println("1. Tampilkan produk");
-            System.out.println("2. Beli produk");
-            System.out.println("3. Pembayaran");
-            System.out.println("4. Riwayat Transaksi");
-            System.out.println("0. Logout");
             clearScreen();
             System.out.println("""
                 ╔════════════════════════════════════════════════╗
@@ -99,8 +96,11 @@ public class menuAdmin {
                         System.out.print("╔══════════════════════════════════════════╗\n");
                         System.out.print("║ Masukkan panjang Joran  =              ║\n");
                         System.out.print("╚══════════════════════════════════════════╝\n");
+
                         double panjang = Double.parseDouble(br.readLine());
-                        joran newjoran = new joran("",nama, merek, harga,bahan,panjang);
+                        String idProduk = UUID.randomUUID().toString();
+                        joran newjoran = new joran(idProduk,nama, merek, harga,bahan,panjang);
+                        Main.listJoran.add(newjoran);
                         // Simpan ke database
                         newjoran.saveToDB();
                         System.out.println("\n╔══════════════════════════════════════════╗");
@@ -162,39 +162,112 @@ public class menuAdmin {
                 displayProduk();
                 promptEnterKey(br);
             }else if(pilih.equals("3")){
-                displayProduk();
-                
+                ubahJoran(br);
             }else if (pilih.equals("4")) {
-                
+                deleteJoran(br);
             }else if(pilih.equals("0")){
                  break;
             }
         }
             
     }
-    public void displayProduk() {
-    System.out.println("=== display produk ===");
-        try (Connection conn = DatabaseConnection.getConnection();
-                PreparedStatement pstmt = conn.prepareStatement("SELECT produk.id_produk, produk.nama, produk.merek, produk.harga, joran.bahan, joran.panjang " +
-                "FROM produk " +
-                "INNER JOIN joran ON produk.id_produk = joran.id_produk");
-                ResultSet rs = pstmt.executeQuery()) {
+    public void displayProduk() throws IOException {
+    System.out.println("════════════════ List Joran ════════════════════");
+    displayJoran();
+    promptEnterKey(br);
+    System.out.println("════════════════ List MataKail ════════════════════");
+    //!! tolong tambahkan
+    promptEnterKey(br);
+    System.out.println("════════════════ List Senar ════════════════════");
+    //!! tolong tambahkan
+    promptEnterKey(br);
+    }
+    public static void displayJoran(){
+        for (int i = 0; i < Main.listJoran.size(); i++) {
+            System.out.println("[]"+(i+1)+".]"+"══════════════════════════════════════════════");
+            System.out.println("Nama    = " + Main.listJoran.get(i).getNama());
+            System.out.println("Merek   = " + Main.listJoran.get(i).getMerek());
+            System.out.println("Harga   = " +"Rp "+ Main.listJoran.get(i).getHarga());
+            System.out.println("Bahan   = " + Main.listJoran.get(i).getBahan());
+            System.out.println("Panjang = " + Main.listJoran.get(i).getPanjang()+" inch");
+            System.out.println("════════════════════════════════════════════════");
+        }  
+    }
 
-            while (rs.next()) {
-                String idProduk = rs.getString("id_produk");
-                String nama = rs.getString("nama");
-                String merek = rs.getString("merek");
-                double harga = rs.getDouble("harga");
-                String bahan = rs.getString("bahan");
-                double panjang = rs.getDouble("panjang");
+    public static void ubahJoran(BufferedReader br) throws IOException,SQLException {
+        clearScreen();
+        displayJoran();
+        System.out.print("╔══════════════════════════════════════════════════════════╗\n");
+        System.out.print("║ Pilih Nomor Joran yang ingin diubah:                     ║\n");
+        System.out.print("╚══════════════════════════════════════════════════════════╝\n");
 
-                System.out.println("ID Produk: " + idProduk + ", Nama: " + nama +
-                                   ", Merek: " + merek + ", Harga: " + harga +
-                                   ", Bahan: " + bahan + ", Panjang: " + panjang);
-            }
+        int choice = Integer.parseInt(br.readLine()) - 1;
+        if (choice >= 0 && choice < Main.listJoran.size()) {
+            System.out.print("╔══════════════════════════════════════════════════════════╗\n");
+            System.out.print("║ Masukkan Nama Baru Joran =                               ║\n");
+            System.out.print("╚══════════════════════════════════════════════════════════╝\n");
+            String nama = br.readLine();
+            System.out.print("╔══════════════════════════════════════════════════════════╗\n");
+            System.out.print("║ Masukkan Merek Baru Joran =                              ║\n");
+            System.out.print("╚══════════════════════════════════════════════════════════╝\n");
+            String merek = br.readLine();
+            System.out.print("╔══════════════════════════════════════════════════════════╗\n");
+            System.out.print("║ Masukkan Harga Baru Joran =                              ║\n");
+            System.out.print("╚══════════════════════════════════════════════════════════╝\n");
+            double harga = Double.parseDouble(br.readLine());
+            System.out.print("╔══════════════════════════════════════════════════════════╗\n");
+            System.out.print("║ Masukkan Bahan Joran Baru =                              ║\n");
+            System.out.print("╚══════════════════════════════════════════════════════════╝\n");
+            String bahan = br.readLine();
+            System.out.print("╔══════════════════════════════════════════════════════════╗\n");
+            System.out.print("║ Masukkan Panjang Baru Joran =                              ║\n");
+            System.out.print("╚══════════════════════════════════════════════════════════╝\n");
+            double panjang = Double.parseDouble(br.readLine());
+            joran joranToUpdate = Main.listJoran.get(choice);
+            //update array list
+            joranToUpdate.setNama(nama);
+            joranToUpdate.setMerek(merek);
+            joranToUpdate.setHarga(harga);
+            joranToUpdate.setBahan(bahan);
+            joranToUpdate.setPanjang(panjang);
+            //update database menggunakan fungsi
+            controller.updateJoran(joranToUpdate);
 
-        } catch (SQLException e) {
-            e.printStackTrace();
+            System.out.println("\n╔════════════════════════════════════════════════════════╗");
+            System.out.println(  "║             Data Joran Berhasil Diubah!                ║");
+            System.out.println(  "╚════════════════════════════════════════════════════════╝");
+            promptEnterKey(br);
+        } else {
+            System.out.println("╔════════════════════════════════════════════════════════╗");
+            System.out.println("║                Nomor Joran Tidak Valid!                ║");
+            System.out.println("╚════════════════════════════════════════════════════════╝");
+            promptEnterKey(br);
         }
-}
+    }
+    
+    public void deleteJoran(BufferedReader br) throws IOException{
+        clearScreen();
+        displayJoran();
+        System.out.print("╔══════════════════════════════════════════════════════════╗\n");
+        System.out.print("║ Pilih Nomor Joran yang ingin dihapus =                   ║\n");
+        System.out.print("╚══════════════════════════════════════════════════════════╝\n");
+        int choice = Integer.parseInt(br.readLine()) - 1;
+
+        if (choice >= 0 && choice < Main.listJoran.size()) {
+            controller.deleteJoran(Main.listJoran.get(choice));
+            Main.listJoran.remove(choice);
+            System.out.println("\n╔════════════════════════════════════════════════════════╗");
+            System.out.println(  "║             Data Joran Berhasil Diubah!                ║");
+            System.out.println(  "╚════════════════════════════════════════════════════════╝");
+            promptEnterKey(br);
+        } else {
+            System.out.println("╔════════════════════════════════════════════════════════╗");
+            System.out.println("║                Nomor joran Tidak Valid!                ║");
+            System.out.println("╚════════════════════════════════════════════════════════╝");
+            promptEnterKey(br);
+        }
+    }
+    
+
+
 }

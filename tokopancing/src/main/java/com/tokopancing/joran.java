@@ -16,7 +16,6 @@ public class joran extends produk {
 
     @Override
     public void tampil() {
-        System.out.println("Joran:");
         System.out.println("Nama = " + getNama());
         System.out.println("Merek = " + getMerek());
         System.out.println("Harga = " + getHarga());
@@ -45,6 +44,9 @@ public class joran extends produk {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+    public void updateDb(){
+
     }
 
     public String getBahan(){
