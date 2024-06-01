@@ -11,6 +11,9 @@ public class Main {
     public static ArrayList<produk> listProduk = new ArrayList<>();
     public static ArrayList<joran> listJoran = new ArrayList<>();
     public static ArrayList<mataKail> listMataKail = new ArrayList<>();
+    public static ArrayList<transaksi> listTransaksi = new ArrayList<>();
+    public static ArrayList<detailTransaksi> listDetail = new ArrayList<>();
+    public static String currentUser;
     public static void main(String[] args) throws IOException {
 
             try {
@@ -20,7 +23,7 @@ public class Main {
             //Load set data ke ArrayList
             controller.getAllUsers();
             controller.loadDataJoran();
-            
+
             while (true) {
 
 
@@ -52,8 +55,9 @@ public class Main {
                     users user = dataController.login(username, password);
                     if (user != null) {
                         if (user.getRole().equals("pelanggan")) {
+                            currentUser = user.getUsername();
                             menuPelanggan mnu = new menuPelanggan();
-                            mnu.displayPelangganMenu();
+                            mnu.displayPelangganMenu(user.getUsername());
                         } else if(user.getRole().equals("admin")){
                             menuAdmin adminmenu = new menuAdmin();
                             adminmenu.displayAdminMenu();

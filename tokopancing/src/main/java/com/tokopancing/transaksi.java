@@ -25,6 +25,10 @@ public class transaksi {
         totalPembayaran = items.stream().mapToDouble(detailTransaksi::getSubTotalPembayaran).sum();
     }
 
+    public void saveTransaksiToDB(){
+        
+    }
+
     public String getIdTransaksi() {
         return idTransaksi;
     }
